@@ -1,0 +1,158 @@
+:root {
+    /* Размер плитки адаптируется под размер экрана */
+    --tile-size: min(100vh/3, 100vw/3);
+    --text-size: calc(var(--tile-size)*0.25);
+    --gap: 15px;
+    --main-bg: #2B2D30;
+    --tile-bg: #43454A;
+    --text-color: #EAEAEA;
+    --accent-color: #FFA500; /* Оранжевый */
+}
+
+body {
+    margin: 0;
+    background-color: #1E1F22;
+    color: var(--text-color);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.tile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.large-tile {
+
+    background-color: var(--main-bg);
+    padding: var(--gap);
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+}
+
+.tile-grid {
+    display: grid;
+    grid-template-columns: repeat(3, var(--tile-size));
+    grid-template-rows: var(--tile-size) auto;
+    gap: var(--gap);
+}
+
+.tile {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+.small-tile {
+    background-color: var(--tile-bg);
+    width: var(--tile-size);
+    height: var(--tile-size);
+}
+
+.wide-tile {
+    background-color: var(--tile-bg);
+    grid-column: span 3; /* Растягиваем на 3 колонки */
+    height: calc(var(--tile-size) * 0.8); /* Делаем график чуть ниже */
+}
+
+/* --- Стили для контента внутри плиток --- */
+
+.tile-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    text-align: center;
+}
+
+.tile-label {
+    font-size: 1.1rem;
+    color: #b0b0b0;
+    margin-bottom: 10px;
+}
+
+/* Плитка 1: Target */
+.target-temp {
+    font-size: var(--text-size);
+    font-weight: bold;
+}
+.arrows {
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+}
+.arrow {
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+.arrow:hover { opacity: 1; }
+.arrow.up { border-bottom: 15px solid var(--text-color); }
+.arrow.down { border-top: 15px solid var(--text-color); }
+
+
+/* Плитка 2: Таймер */
+.timer-container { position: relative; }
+.timer-svg {
+    position: absolute;
+    width: 90%;
+    height: 90%;
+    transform: rotate(-90deg) scaleX(-1);
+}
+.progress-bg, .progress-bar {
+    fill: none;
+    stroke-width: 10;
+}
+.progress-bg {
+    stroke: var(--main-bg);
+}
+.progress-bar {
+    stroke: var(--accent-color);
+    stroke-linecap: round; /* Скругляем концы линии */
+}
+.timer-text {
+    font-size: var(--text-size);
+    font-weight: bold;
+}
+.timer-subtext {
+    font-size: 1.2rem;
+    color: #b0b0b0;
+}
+
+/* Плитка 3: Время */
+.time-value {
+    font-size: var(--text-size);
+    font-weight: bold;
+}
+.time-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+.time-buttons button {
+    background: #5a5d63;
+    color: var(--text-color);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+.time-buttons button:hover { background: #6b6e75; }
+
+/* Плитка 4: График */
+#tempChart {
+    width: 100%;
+    height: 100%;
+}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IoT Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<main>
+    <div class="tile-container">
+        <div class="tile large-tile">
+            <div class="tile-grid">
+                <div class="tile small-tile" id="internal1">
+                    <div class="tile-content">
+                        <span class="tile-label">Target</span>
+                        <div class="target-temp">34°C</div>
+                        <div class="arrows">
+                            <div class="arrow down" onclick="setTargetTemperature(-1)"></div>
+                            <div class="arrow up" onclick="setTargetTemperature(1)"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tile small-tile" id="internal2" onclick="timerButtonHandler()">
+                    <div class="tile-content timer-container">
+                        <svg class="timer-svg" viewBox="0 0 120 120">
+                            <circle class="progress-bg" cx="60" cy="60" r="54" />
+                            <circle class="progress-bar" cx="60" cy="60" r="54" />
+                        </svg>
+                        <div class="timer-text">00:00</div>
+                    </div>
+                </div>
+                <div class="tile small-tile" id="internal3">
+                    <div class="tile-content">
+                        <span class="tile-label">Time</span>
+                        <div class="time-value">00:00</div>
+                        <div class="time-buttons">
+                            <button onclick="setTime(3600)">+1h</button>
+                            <button onclick="setTime(300)">+5m</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="tile wide-tile" id="internal4">
+                    <canvas id="tempChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="newVersion.js"></script>
+</body>
+</html>

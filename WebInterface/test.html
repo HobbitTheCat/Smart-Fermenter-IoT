@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Пиксельный таймер</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #121212;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .timer-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+        }
+
+        svg {
+            transform: rotate(-90deg);
+        }
+
+        .circle-bg,
+        .circle-progress {
+            fill: none;
+            stroke-width: 12;
+        }
+
+        .circle-bg {
+            stroke: #333;
+        }
+
+        .circle-progress {
+            stroke: orange;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.1s linear;
+        }
+
+        .time-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -65%);
+            color: white;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        .start-stop {
+            position: absolute;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .start-stop svg {
+            width: 40px;
+            height: 40px;
+            fill: white;
+            transition: fill 0.3s;
+        }
+
+        .start-stop:hover svg {
+            fill: orange;
+        }
+    </style>
+</head>
+<body>
+<div class="timer-container">
+    <svg width="300" height="300">
+        <circle class="circle-bg" cx="150" cy="150" r="120" />
+        <circle class="circle-progress" cx="150" cy="150" r="120" stroke-dasharray="754" stroke-dashoffset="0" />
+    </svg>
+    <div class="time-display" id="time">01:00</div>
+    <button class="start-stop" id="toggle">
+        <svg id="icon" viewBox="0 0 24 24">
+            <polygon points="5,3 19,12 5,21" />
+        </svg>
+    </button>
+</div>
+
+<script>
+    const timeDisplay = document.getElementById("time");
+    const toggleButton = document.getElementById("toggle");
+    const icon = document.getElementById("icon");
+    const progressCircle = document.querySelector(".circle-progress");
+    const radius = 120;
+    const circumference = 2 * Math.PI * radius;
+
+    let duration = 60;
+    let remaining = duration;
+    let running = false;
+    let timer;
+
+    progressCircle.style.strokeDasharray = circumference;
+    progressCircle.style.strokeDashoffset = 0;
+
+    function formatTime(sec) {
+        const m = String(Math.floor(sec / 60)).padStart(2, "0");
+        const s = String(sec % 60).padStart(2, "0");
+        return `${m}:${s}`;
+    }
+
+    function updateProgress() {
+        const offset = circumference * (1 - remaining / duration);
+        progressCircle.style.strokeDashoffset = offset;
+        timeDisplay.textContent = formatTime(remaining);
+    }
+
+    function tick() {
+        if (remaining > 0) {
+            remaining--;
+            updateProgress();
+        } else {
+            clearInterval(timer);
+            running = false;
+            icon.innerHTML = '<polygon points="5,3 19,12 5,21" />';
+        }
+    }
+
+    toggleButton.addEventListener("click", () => {
+        if (running) {
+            clearInterval(timer);
+            running = false;
+            icon.innerHTML = '<polygon points="5,3 19,12 5,21" />'; // Play
+        } else {
+            timer = setInterval(tick, 1000);
+            running = true;
+            icon.innerHTML = `
+          <g>
+            <rect x="6" y="5" width="4" height="14"></rect>
+            <rect x="14" y="5" width="4" height="14"></rect>
+          </g>`; // Pause
+        }
+    });
+
+    updateProgress();
+</script>
+</body>
+</html>

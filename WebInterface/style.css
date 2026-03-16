@@ -1,0 +1,93 @@
+:root{
+    --tile-size: min(100vh/3, 100vw/3);
+    --gap: 15px;
+}
+
+body {
+    margin: 0;
+    background-color: #1E1F22;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.tile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.large-tile {
+    background-color: #2B2D30;
+    padding: var(--gap);
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+}
+
+.tile-grid {
+    display: grid;
+    grid-template-columns: repeat(3, var(--tile-size));
+    grid-template-rows: var(--tile-size) var(--tile-size);
+    gap: var(--gap);
+}
+
+.tile {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+}
+
+.small-tile {
+    background-color: #43454A;
+    width: var(--tile-size);
+    height: var(--tile-size);
+}
+
+.wide-tile {
+    background-color: #43454A;
+    grid-column: span 3;
+    height: var(--tile-size);
+    width: 100%;
+}
+
+
+/*@media (max-width: 500px) {*/
+/*    */
+/*}*/
+
+
+.temperature-control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+}
+
+.value-and-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+}
+
+.temperature {
+    font-size: 6em;
+    font-weight: bold;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+}
+
+.btn {
+    font-size: 1.2em;
+    padding: 0.2em 0.5em;
+    cursor: pointer;
+}

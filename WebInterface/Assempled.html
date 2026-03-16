@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IoT Dashboard</title>
+    <style>
+        :root {
+            /* Размер плитки адаптируется под размер экрана */
+            --tile-size: min(100vh/3, 100vw/3);
+            --text-size: calc(var(--tile-size)*0.25);
+            --gap: 15px;
+            --main-bg: #2B2D30;
+            --tile-bg: #43454A;
+            --text-color: #EAEAEA;
+            --accent-color: #FFA500; /* Оранжевый */
+        }
+
+        body {
+            margin: 0;
+            background-color: #1E1F22;
+            color: var(--text-color);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .tile-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .large-tile {
+
+            background-color: var(--main-bg);
+            padding: var(--gap);
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+        }
+
+        .tile-grid {
+            display: grid;
+            grid-template-columns: repeat(3, var(--tile-size));
+            grid-template-rows: var(--tile-size) auto;
+            gap: var(--gap);
+        }
+
+        .tile {
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .small-tile {
+            background-color: var(--tile-bg);
+            width: var(--tile-size);
+            height: var(--tile-size);
+        }
+
+        .wide-tile {
+            background-color: var(--tile-bg);
+            grid-column: span 3; /* Растягиваем на 3 колонки */
+            height: calc(var(--tile-size) * 0.8); /* Делаем график чуть ниже */
+        }
+
+        /* --- Стили для контента внутри плиток --- */
+
+        .tile-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+        }
+
+        .tile-label {
+            font-size: 1.1rem;
+            color: #b0b0b0;
+            margin-bottom: 10px;
+        }
+
+        /* Плитка 1: Target */
+        .target-temp {
+            font-size: var(--text-size);
+            font-weight: bold;
+        }
+        .arrows {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        .arrow {
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .arrow:hover { opacity: 1; }
+        .arrow.up { border-bottom: 15px solid var(--text-color); }
+        .arrow.down { border-top: 15px solid var(--text-color); }
+
+
+        /* Плитка 2: Таймер */
+        .timer-container { position: relative; }
+        .timer-svg {
+            position: absolute;
+            width: 90%;
+            height: 90%;
+            transform: rotate(-90deg); /* Начинаем сверху */
+        }
+        .progress-bg, .progress-bar {
+            fill: none;
+            stroke-width: 10;
+        }
+        .progress-bg {
+            stroke: var(--main-bg);
+        }
+        .progress-bar {
+            stroke: var(--accent-color);
+            stroke-linecap: round; /* Скругляем концы линии */
+        }
+        .timer-text {
+            font-size: var(--text-size);
+            font-weight: bold;
+        }
+        .timer-subtext {
+            font-size: 1.2rem;
+            color: #b0b0b0;
+        }
+
+        /* Плитка 3: Время */
+        .time-value {
+            font-size: var(--text-size);
+            font-weight: bold;
+        }
+        .time-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .time-buttons button {
+            background: #5a5d63;
+            color: var(--text-color);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+        .time-buttons button:hover { background: #6b6e75; }
+
+        /* Плитка 4: График */
+        #tempChart {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<main>
+    <div class="tile-container">
+        <div class="tile large-tile">
+            <div class="tile-grid">
+                <div class="tile small-tile" id="internal1">
+                    <div class="tile-content">
+                        <span class="tile-label">Target</span>
+                        <div class="target-temp">34°C</div>
+                        <div class="arrows">
+                            <div class="arrow down" onclick="setTargetTemperature(-1)"></div>
+                            <div class="arrow up" onclick="setTargetTemperature(1)"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tile small-tile" id="internal2" onclick="timerButtonHandler()">
+                    <div class="tile-content timer-container">
+                        <svg class="timer-svg" viewBox="0 0 120 120">
+                            <circle class="progress-bg" cx="60" cy="60" r="54" />
+                            <circle class="progress-bar" cx="60" cy="60" r="54" />
+                        </svg>
+                        <div class="timer-text">00:00</div>
+                    </div>
+                </div>
+                <div class="tile small-tile" id="internal3">
+                    <div class="tile-content">
+                        <span class="tile-label">Time</span>
+                        <div class="time-value">00:00</div>
+                        <div class="time-buttons">
+                            <button onclick="setTime(3600)">+1h</button>
+                            <button onclick="setTime(300)">+5m</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="tile wide-tile" id="internal4">
+                    <canvas id="tempChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const progressBar = document.querySelector('.progress-bar');
+    const timerText = document.querySelector('.timer-text');
+    const targetTime = document.querySelector('.time-value');
+    const temperatureText = document.querySelector('.target-temp');
+
+    const radius = progressBar.r.baseVal.value;
+    const circumference = 2 * Math.PI * radius;
+    progressBar.style.strokeDasharray = circumference;
+
+    let interval = 600;
+    let isRunning = false;
+
+    async function getStatus(){
+        const response = await fetch('/api/status');
+        return await response.json();
+    }
+
+    async function pauseProcess(){
+        const response = await fetch('/api/pause', {method: 'POST'});
+        return await response.text();
+    }
+
+    async function startProcess(){
+        const response = await fetch('/api/start', {method: 'POST'});
+        return await response.text();
+    }
+
+    async function setTime(secondsToAdd){
+        const formData = new URLSearchParams();
+        formData.append("amount_to_add_sec", secondsToAdd);
+        const response = await fetch('/api/set_time', {
+            method: "POST",
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            body: formData
+        });
+        return await response.text();
+    }
+
+    async function setTargetTemperature(deltaTemp){
+        const formData = new URLSearchParams();
+        formData.append("temp_to_add", deltaTemp);
+        const response = await fetch('/api/set_target', {
+            method: "POST",
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            body: formData
+        });
+        return await response.text();
+    }
+
+    async function updateData(){
+        try {
+            const status = await getStatus();
+            isRunning = status.isRunning;
+
+            const timeLeft = status.timeLeft;
+            const initialDuration = status.initialDuraion;
+
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = Math.floor(initialDuration % 60);
+            let hours = Math.floor(minutes / 60);
+            minutes = minutes % 60;
+
+            if (hours > 0) timerText.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+            else timerText.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            minutes = Math.floor(initialDuration / 60);
+            hours = Math.floor(minutes / 60);
+            minutes = minutes % 60;
+            targetTime.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+
+
+            const progress = (initialDuration - timeLeft) / initialDuration;
+            progressBar.style.strokeDashoffset = circumference * (1 - progress);
+
+            const tagetTemp = status.targetTemp;
+            if(tagetTemp <= 10) temperatureText.textContent = `Off`
+            else temperatureText.textContent = `${tagetTemp.toFixed(2)}%°C`;
+
+        } catch (e) {
+            console.error("Error while retrieving data", e);
+        }
+    }
+
+    async function fetchChartAndUpdate() {
+        try {
+            const response = await fetch(`/api/temp_history?interval=${interval}`);
+            const temps = await response.json();
+
+            const labels = temps.map(entry => `${entry.dt}s`);
+
+            const data = temps.map(entry => entry.temp);
+
+            if (chart) {
+                chart.data.labels = labels;
+                chart.data.datasets[0].data = data;
+                chart.update();
+            } else {
+                const ctx = document.getElementById('tempChart').getContext('2d');
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels,
+                        datasets: [{
+                            label: 'Температура',
+                            data: data,
+                            borderColor: '#FFA500',
+                            backgroundColor: 'rgba(255,165,0,0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 3,
+                            pointRadius: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { enabled: false }
+                        },
+                        scales: {
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#999', maxTicksLimit: 10 }
+                            },
+                            y: {
+                                min: 15,
+                                max: 45,
+                                grid: { display: false },
+                                ticks: { display: false }
+                            }
+                        }
+                    }
+                });
+            }
+        } catch (e) {
+            console.error('Ошибка при получении /api/temp_history', e);
+        }
+    }
+
+    async function updateInterval(newDuration) {
+        interval = newDuration;
+    }
+
+    async function timerButtonHandler() {
+        if (isRunning) {
+            await pauseProcess();
+        } else {
+            await startProcess();
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        setInterval(updateData, 500);
+
+        setInterval(fetchChartAndUpdate, 5000);
+    });
+
+</script>
+</body>
+</html>

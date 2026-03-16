@@ -1,0 +1,71 @@
+#include <Arduino.h>
+#include <TFT_eSPI.h>
+#include "display.h"
+#include "utils.h"
+#include "encoder.h"
+#include "timer.h"
+
+TFT_eSPI tft = TFT_eSPI();
+Timer timer = Timer();
+Display display(tft, TFT_WHITE, Utils::color(0, 13, 15), Utils::color(253, 157, 46), Utils::color(28, 35, 36), 200);
+EncoderReader encoder(34, 35, 32);
+
+uint32_t lastUpdate = 0;
+
+void onTimerEnd() {
+  display.drawArc(360);
+}
+
+void setup() {
+  timer.setOnCompleteCallback(onTimerEnd);
+  timer.start(60);
+  Serial.begin(115200);
+}
+
+void loop() {
+  encoder.update();
+  timer.update();
+
+
+  
+  uint32_t now = millis();
+  if (now - lastUpdate >= 200 && timer.getRemainingTime() > 0) {
+    uint32_t remaining = timer.getRemainingTime();
+    uint32_t duration = timer.getInitialDuration();
+
+    float percent = (float)remaining / duration;
+    int endAngle = 360 - percent * 360;
+    
+    display.drawArc(endAngle);
+
+    uint8_t minutes = remaining / 60;
+    uint8_t secs = remaining % 60;
+
+    char buffer[6];
+    snprintf(buffer, sizeof(buffer), "%02u:%02u", minutes, secs);
+    display.drawText(buffer);
+  }
+
+  if (encoder.hasChanged()) {
+    int direction = encoder.getDirection();
+    switch (direction){
+      case 1: timer.setRemainningTime((timer.getRemainingTime() + 2) * 1000); break;
+      case -1: timer.setRemainningTime(timer.getRemainingTime() * 1000 - 500); break;
+    }
+  }
+
+  if (encoder.wasShortPressed()) {
+    Serial.println("Короткое нажатие");
+    timer.pause();
+  }
+
+  if (encoder.wasLongPressed()) {
+    Serial.println("Длинное нажатие");
+    timer.resume();
+  }
+
+  if (timer.getRemainingTime() == 0){
+    display.blinkText("00:00");
+    delay(50);
+  }
+}
