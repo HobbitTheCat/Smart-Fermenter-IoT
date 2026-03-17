@@ -142,6 +142,7 @@ This trade-off favors simplicity and reliability over theoretical precision.
 - Overheat protection implemented as simple cutoff
 
 One of the early versions of the electrical diagram:
+
 <img src="Images/shemaa.jpg" alt="Early version" width="600">
 
 ---
