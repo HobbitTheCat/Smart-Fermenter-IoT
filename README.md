@@ -51,16 +51,9 @@ public:
 ```
 
 ### Navigation Logic:
-```mermaid
-stateDiagram-v2
-    [*] --> Temperature
-    Temperature --> TimeMenu : rotate
-    Temperature --> TemperatureEdit : short press
-    TimeMenu --> Idle : short press
-    Idle --> Running : long press
-    Running --> Idle : long press
-    Running --> TemperatureEdit : accessible during run
-```
+
+<img src="Images/Automat.png" alt="Navigation liogic" width="200">
+
 The FSM architecture helped eliminate early logic bugs and makes the system easily extensible.
 
 
