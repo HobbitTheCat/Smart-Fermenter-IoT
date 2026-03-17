@@ -2,7 +2,18 @@
 
 A broken yogurt maker became an opportunity to build a complete embedded control system — combining real-time temperature regulation, a finite state machine UI, and remote control over Wi-Fi.
 
-<table> <tr> <td align="center"><img src="Images/FrontView.png" width="110%"><br><b>CAD Model (Fusion 360)</b></td> <td align="center"><img src="Images/20260213_165921.jpg" width="35%"><br><b>Final Build</b></td> </tr> </table>
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="Images/FrontView.png" width="300"><br>
+      <b>CAD Model (Fusion 360)</b>
+    </td>
+    <td align="center" width="50%">
+      <img src="Images/20260213_165921.jpg" width="300"><br>
+      <b>Final Build</b>
+    </td>
+  </tr>
+</table>
 
 The enclosure and PCB were designed before assembly, resulting in a close match between the digital model and the physical device.
 
@@ -130,6 +141,7 @@ This trade-off favors simplicity and reliability over theoretical precision.
 - No watchdog / crash recovery
 - Overheat protection implemented as simple cutoff
 
+One of the early versions of the electrical diagram:
 <img src="Images/shemaa.jpg" alt="Early version" width="600">
 
 ---
