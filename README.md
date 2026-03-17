@@ -2,7 +2,7 @@
 
 A broken yogurt maker became an opportunity to build a complete embedded control system — combining real-time temperature regulation, a finite state machine UI, and remote control over Wi-Fi.
 
-<table> <tr> <td align="center"><img src="Images/FrontView.png" width="100%"><br><b>CAD Model (Fusion 360)</b></td> <td align="center"><img src="Images/20260213_165921.jpg" width="40%"><br><b>Final Build</b></td> </tr> </table>
+<table> <tr> <td align="center"><img src="Images/FrontView.png" width="110%"><br><b>CAD Model (Fusion 360)</b></td> <td align="center"><img src="Images/20260213_165921.jpg" width="35%"><br><b>Final Build</b></td> </tr> </table>
 
 The enclosure and PCB were designed before assembly, resulting in a close match between the digital model and the physical device.
 
@@ -52,7 +52,7 @@ public:
 
 ### Navigation Logic:
 
-<img src="Images/Automat.png" alt="Navigation liogic" width="200">
+<img src="Images/Automat.png" alt="Navigation liogic" width="600">
 
 The FSM architecture helped eliminate early logic bugs and makes the system easily extensible.
 
