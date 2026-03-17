@@ -2,7 +2,7 @@
 
 A broken yogurt maker became an opportunity to build a complete embedded control system — combining real-time temperature regulation, a finite state machine UI, and remote control over Wi-Fi.
 
-<table> <tr> <td align="center"><img src="Images/FrontView.png" width="100%"><br><b>CAD Model (Fusion 360)</b></td> <td align="center"><img src="Images/20260213_165921.jpg" width="60%"><br><b>Final Build</b></td> </tr> </table>
+<table> <tr> <td align="center"><img src="Images/FrontView.png" width="100%"><br><b>CAD Model (Fusion 360)</b></td> <td align="center"><img src="Images/20260213_165921.jpg" width="40%"><br><b>Final Build</b></td> </tr> </table>
 
 The enclosure and PCB were designed before assembly, resulting in a close match between the digital model and the physical device.
 
