@@ -130,6 +130,8 @@ This trade-off favors simplicity and reliability over theoretical precision.
 - No watchdog / crash recovery
 - Overheat protection implemented as simple cutoff
 
+<img src="Images/shemaa.jpg" alt="Early version" width="600">
+
 ---
 
 ## Web Interface
