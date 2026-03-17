@@ -1,4 +1,4 @@
-#Smart Fermentation IoT
+# Smart Fermentation IoT
 
 A broken yogurt maker became an opportunity to build a complete embedded control system — combining real-time temperature regulation, a finite state machine UI, and remote control over Wi-Fi.
 
@@ -8,7 +8,7 @@ The enclosure and PCB were designed before assembly, resulting in a close match 
 
 ---
 
-##Overview
+## Overview
 This project is not just a household appliance, but a small embedded system combining:
 - Real-time control (temperature regulation)
 - Human-machine interface (FSM-driven UI)
@@ -27,7 +27,7 @@ This project is not just a household appliance, but a small embedded system comb
 
 ---
 
-##Architecture
+## Architecture
 
 The firmware is structured as a finite state machine (FSM), where each state encapsulates its own behavior and input handling.
 
@@ -50,7 +50,7 @@ public:
 };
 ```
 
-###Navigation Logic:
+### Navigation Logic:
 ```
 stateDiagram-v2
     [*] --> Temperature
@@ -64,14 +64,14 @@ stateDiagram-v2
 The FSM architecture helped eliminate early logic bugs and makes the system easily extensible.
 
 
-###Design properties
+### Design properties
 
 - Each state defines its own reactions to input events
 - No global branching logic
 - Easy extensibility: adding a state = adding a class
 - Clear separation between UI behavior and control logic
 
-###Example: Running state
+### Example: Running state
 
 ```C++
 void RunningState::onShortPress() {
@@ -92,21 +92,21 @@ The main loop delegates execution to the active state, which updates only the ne
 
 ---
 
-##Temerature Control
+## Temerature Control
 Temperature is controlled using hysteresis switching instead of PID.
 
-###Reasoning
+### Reasoning
 - PID with relay control requires frequent switching → reduces relay lifespan
 - Thermal inertia of the system reduces the need for tight control
 - Full-power heating decreases time to reach target temperature
 
-###Parameters
+### Parameters
 
 - Hysteresis band: ±0.25°C
 - Sampling: periodic (main loop)
 - No filtering applied
 
-###Observed behavior
+### Observed behavior
 
 - Ramp-up overshoot: up to +4°C
 - Steady-state accuracy: ±1–1.5°C
@@ -116,7 +116,7 @@ This trade-off favors simplicity and reliability over theoretical precision.
 
 ---
 
-##Hardware
+## Hardware
 
 | Component      | Role               |
 | -------------- | ------------------ |
@@ -127,24 +127,24 @@ This trade-off favors simplicity and reliability over theoretical precision.
 | Rotary encoder | User input         |
 | TFT display    | UI                 |
 
-###Design decisions
+### Design decisions
 - **ESP32:** dual-core allows separation of UI and networking
 - **SSR relay:** more reliable than mechanical relay (no wear from switching)
 - **DS18B20:** simple and sufficient for required accuracy
 
-###Limitations
+### Limitations
 - No sensor failure detection
 - No watchdog / crash recovery
 - Overheat protection implemented as simple cutoff
 
 ---
 
-##Web Interface
+## Web Interface
 <table> <tr> <td align="center"><img src="Images/WebInterfaceSkatch.png" width="100%"><br><b>UI Sketch</b></td> <td align="center"><img src="Images/WebInterfaceReal.png" width="100%"><br><b>Implementation</b></td> </tr> </table>
 
 The ESP32 runs an HTTP server on a separate core.
 
-###API Examples
+### API Examples
 
 ```C++
 POST /api/start
@@ -152,19 +152,19 @@ POST /api/pause
 POST /api/set_time
 ```
 
-###Behavior
+### Behavior
 - Client sends commands via REST-like endpoints
 - State changes are immediately applied in firmware
 - UI and web interface stay consistent
 
-###Limitations
+### Limitations
 - No concurrency control (last request wins)
 - No multi-client synchronization
 - Polling-based updates (no WebSocket)
 
 ---
 
-##System Behavior & Measurements
+## System Behavior & Measurements
 - Temperature logging available via serial output
 - Overshoot during heating: ~4°C
 - Stable regime: ±1–1.5°C
@@ -174,10 +174,10 @@ These measurements confirm that hysteresis control is sufficient for fermentatio
 
 ---
 
-##UI Design Trade-offs
+## UI Design Trade-offs
 Using a single encoder + button for all interactions led to a complex and unintuitive interface.
 
-###Observable issues
+### Observable issues
 - Navigation and confirmation share the same input
 - User flow becomes difficult to predict
 
@@ -186,14 +186,14 @@ In future it may be interesting to add a second dedicated button.
 
 ---
 
-Implementation Details
+## Implementation Details
 - UI optimized to update only changed elements (low display refresh rate)
 - Temperature sensor required thermal coupling (thermal paste) for accuracy
 - FSM architecture helped eliminate early logic bugs
 
 ---
 
-###Lessons Learned (Post-Mortem)
+### Lessons Learned (Post-Mortem)
 | Decision      | Observation               | Future Improvement   |
 | -------------- | ------------------ | ------------------ |
 | Single Encoder Input          | Navigating and confirming with one button was unintuitive.   | Add a second dedicated button to separate navigation from confirmation. |
@@ -202,7 +202,7 @@ Implementation Details
 
 ---
 
-###Repository Structure
+### Repository Structure
 
 ```
 ├── Firmware/ 			# PlatformIO C++ Project
@@ -221,7 +221,7 @@ Implementation Details
 
 ---
 
-#Stack
+# Stack
 - Firmware: C++ (PlatformIO)
 - Hardware design: KiCad, Fusion 360
 - Web: HTML / CSS / JavaScript
